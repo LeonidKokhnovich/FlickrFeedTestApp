@@ -29,7 +29,14 @@ protocol ImageProviderType {
 class ImageProvider: ImageProviderType {
     static let shared = ImageProvider()
     
+    // Dependencies
+    private let session: URLSession
+    
     let cache = NSCache<NSString, UIImage>()
+    
+    init(session: URLSession = .shared) {
+        self.session = session
+    }
     
     func loadImage(with identifier: ImageIdentifier, completionBlock: @escaping (_ image: UIImage?) -> Void) {
         if let image = cache.object(forKey: identifier.description as NSString) {
@@ -46,7 +53,20 @@ class ImageProvider: ImageProviderType {
                 completionBlock(nil)
             }
         case .remote(let url):
-            break
+            let task = session.dataTask(with: url) { [cache = self.cache] (data, response, error) in
+                guard error == nil,
+                    let response = response as? HTTPURLResponse,
+                    response.statusCode == HTTPResponseStatusCode.success.rawValue,
+                    let data = data,
+                    let image = UIImage(data: data) else {
+                        completionBlock(nil)
+                        return
+                }
+                
+                cache.setObject(image, forKey: identifier.description as NSString)
+                completionBlock(image)
+            }
+            task.resume()
         }
     }
 }
