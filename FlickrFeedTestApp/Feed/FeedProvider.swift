@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum FeedManagerError: Error {
+enum FeedProviderError: Error {
     case invalidURLRequest
     case invalidResponse
     case emptyResponseData
@@ -17,12 +17,12 @@ enum FeedManagerError: Error {
     case internalError(Error)
 }
 
-protocol FeedManagerType {
-    func fetchItems(with completionBlock: @escaping (_ result: Result<[FeedItemModel], FeedManagerError>) -> Void)
+protocol FeedProviderType {
+    func fetchItems(with completionBlock: @escaping (_ result: Result<[FeedItemModel], FeedProviderError>) -> Void)
 }
 
-class FeedManager: FeedManagerType {
-    static let shared = FeedManager()
+class FeedProvider: FeedProviderType {
+    static let shared = FeedProvider()
     
     // Dependencies
     private let session: URLSession
@@ -37,7 +37,7 @@ class FeedManager: FeedManagerType {
         self.requestBuilder = requestBuilder
     }
     
-    func fetchItems(with completionBlock: @escaping (_ result: Result<[FeedItemModel], FeedManagerError>) -> Void) {
+    func fetchItems(with completionBlock: @escaping (_ result: Result<[FeedItemModel], FeedProviderError>) -> Void) {
         guard let urlRequest = requestBuilder.buildGetPublicPhotosRequest() else {
             completionBlock(.error(.invalidURLRequest))
             return
