@@ -21,6 +21,7 @@
 		84C4648D20BB83D8006B121B /* FeedURLRequestBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C4648C20BB83D8006B121B /* FeedURLRequestBuilder.swift */; };
 		84C4648F20BB8BB8006B121B /* HTTPDefines.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C4648E20BB8BB8006B121B /* HTTPDefines.swift */; };
 		84C4649120BB8D45006B121B /* FeedJSONDecoderBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C4649020BB8D45006B121B /* FeedJSONDecoderBuilder.swift */; };
+		84C4649720BB9231006B121B /* ImageProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C4649620BB9231006B121B /* ImageProvider.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,6 +62,7 @@
 		84C4648C20BB83D8006B121B /* FeedURLRequestBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedURLRequestBuilder.swift; sourceTree = "<group>"; };
 		84C4648E20BB8BB8006B121B /* HTTPDefines.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPDefines.swift; sourceTree = "<group>"; };
 		84C4649020BB8D45006B121B /* FeedJSONDecoderBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedJSONDecoderBuilder.swift; sourceTree = "<group>"; };
+		84C4649620BB9231006B121B /* ImageProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageProvider.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -156,10 +158,27 @@
 		84C4648920BB8335006B121B /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				84C4649520BB921A006B121B /* Model */,
+				84C4649420BB9212006B121B /* Service */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
+		84C4649420BB9212006B121B /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				84C4649620BB9231006B121B /* ImageProvider.swift */,
+			);
+			path = Service;
+			sourceTree = "<group>";
+		};
+		84C4649520BB921A006B121B /* Model */ = {
+			isa = PBXGroup;
+			children = (
 				84C4648A20BB833F006B121B /* Result.swift */,
 				84C4648E20BB8BB8006B121B /* HTTPDefines.swift */,
 			);
-			path = Common;
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -293,6 +312,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84C4649720BB9231006B121B /* ImageProvider.swift in Sources */,
 				84C4648B20BB833F006B121B /* Result.swift in Sources */,
 				84C4648D20BB83D8006B121B /* FeedURLRequestBuilder.swift in Sources */,
 				84C4649120BB8D45006B121B /* FeedJSONDecoderBuilder.swift in Sources */,
