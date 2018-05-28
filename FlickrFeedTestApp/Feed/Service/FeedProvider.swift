@@ -11,7 +11,7 @@ import Foundation
 enum FeedProviderError: Error {
     case invalidURLRequest
     case invalidResponse
-    case emptyResponseData
+    case invalidResponseData
     case failedToParseResponse
     case requestFailed(statusCode: Int)
     case internalError(Error)
@@ -26,15 +26,18 @@ class FeedProvider: FeedProviderType {
     
     // Dependencies
     private let session: URLSession
-    private let requestBuilder: FeedURLRequestBuilderType
     private let decoder: JSONDecoder
+    private let requestBuilder: FeedURLRequestBuilderType
+    private let helper: FeedProviderHelperType
     
     init(session: URLSession = .shared,
          decoder: JSONDecoder = FeedJSONDecoderBuilder.shared.build(),
-         requestBuilder: FeedURLRequestBuilderType = FeedURLRequestBuilder()) {
+         requestBuilder: FeedURLRequestBuilderType = FeedURLRequestBuilder(),
+         helper: FeedProviderHelperType = FeedProviderHelper()) {
         self.session = session
         self.decoder = decoder
         self.requestBuilder = requestBuilder
+        self.helper = helper
     }
     
     func fetchItems(with completionBlock: @escaping (_ result: Result<[FeedItemModel], FeedProviderError>) -> Void) {
@@ -43,7 +46,7 @@ class FeedProvider: FeedProviderType {
             return
         }
         
-        let task = session.dataTask(with: urlRequest) { [decoder = self.decoder] (data, response, error) in
+        let task = session.dataTask(with: urlRequest) { [decoder = self.decoder, helper = self.helper] (data, response, error) in
             if let error = error {
                 completionBlock(.error(.internalError(error)))
                 return
@@ -59,12 +62,13 @@ class FeedProvider: FeedProviderType {
                 return
             }
             
-            guard let data = data else {
-                completionBlock(.error(.emptyResponseData))
+            guard let data = data,
+                let jsonData = helper.extractJSONData(from: data) else {
+                completionBlock(.error(.invalidResponseData))
                 return
             }
             
-            guard let responseModel = try? decoder.decode(FeedResponseModel.self, from: data) else {
+            guard let responseModel = try? decoder.decode(FeedResponseModel.self, from: jsonData) else {
                 completionBlock(.error(.failedToParseResponse))
                 return
             }

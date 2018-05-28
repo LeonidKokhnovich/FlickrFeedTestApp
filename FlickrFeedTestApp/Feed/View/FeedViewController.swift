@@ -16,7 +16,11 @@ class FeedViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         itemsTableView.registerReusableCell(FeedItemTableViewCell.self)
+        itemsTableView.estimatedRowHeight = FeedItemTableViewCell.estimatedRowHeight
+        itemsTableView.rowHeight = UITableViewAutomaticDimension
+        
         viewModel.delegate = self
         viewModel.update()
     }
@@ -31,6 +35,10 @@ extension FeedViewController: FeedViewModelDelegate {
         let alertVC = UIAlertController(title: LocalizedStringProvider.errorTitle,
                                         message: LocalizedStringProvider.errorMessage(error),
                                         preferredStyle: .alert)
+        let action = UIAlertAction(title: LocalizedStringProvider.ok,
+                                   style: .default,
+                                   handler: nil)
+        alertVC.addAction(action)
         present(alertVC, animated: true, completion: nil)
     }
     
@@ -46,6 +54,8 @@ extension FeedViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(FeedItemTableViewCell.self)
+        let itemViewModel = viewModel.items[indexPath.row]
+        cell.setup(with: itemViewModel)
         return cell
     }
 }

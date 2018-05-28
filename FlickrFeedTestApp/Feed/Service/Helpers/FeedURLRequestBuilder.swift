@@ -29,6 +29,7 @@ fileprivate enum ResponseFormat: String {
 class FeedURLRequestBuilder: FeedURLRequestBuilderType  {
     struct Config {
         static let baseLink = "https://api.flickr.com"
+        static let targetEndpointExtension = "gne"
     }
     
     func buildGetPublicPhotosRequest() -> URLRequest? {
@@ -40,10 +41,23 @@ class FeedURLRequestBuilder: FeedURLRequestBuilderType  {
         url.appendPathComponent(HTTPEndpoints.services.rawValue)
         url.appendPathComponent(HTTPEndpoints.feeds.rawValue)
         url.appendPathComponent(HTTPEndpoints.publicPhotos.rawValue)
+        url.appendPathExtension(Config.targetEndpointExtension)
         
-        var request = URLRequest(url: url)
+        guard var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+            print("Unable to create URLComponents from: \(url)")
+            return nil
+        }
+        
+        urlComponents.queryItems = [URLQueryItem(name: HTTPHeaderFieldNames.format.rawValue,
+                                                 value: ResponseFormat.json.rawValue)]
+        
+        guard let resolvedURL = urlComponents.url else {
+            print("Unable to resolve URL from: \(urlComponents)")
+            return nil
+        }
+        
+        var request = URLRequest(url: resolvedURL)
         request.httpMethod = HTTPMethod.get.rawValue
-        request.setValue(ResponseFormat.json.rawValue, forHTTPHeaderField: HTTPHeaderFieldNames.format.rawValue)
         
         return request
     }

@@ -14,9 +14,23 @@ protocol FeedViewModelDelegate: class {
 }
 
 class FeedItemViewModel {
-    let image: UIImage?
+    private let image: UIImage?
+    
     let author: String
     let title: String
+    
+    var showImageLoadingActivityIndicator: Bool {
+        return image == nil ? true : false
+    }
+    
+    var mediaImage: UIImage {
+        if let image = image {
+            return image
+        } else {
+            // TODO: Return placeholder
+            return UIImage.init()
+        }
+    }
     
     fileprivate init(model: FeedItemModel) {
         author = model.author
